@@ -19,6 +19,4 @@ public class Caja {
     public void setSaldoCaja(Double saldoCaja) {
         this.saldoCaja = saldoCaja;
     }
-
-    
 }

@@ -43,5 +43,4 @@ public class RendicionDocumentos {
     public void setIdCaja(int idCaja) {
         this.idCaja = idCaja;
     }
-    
 }

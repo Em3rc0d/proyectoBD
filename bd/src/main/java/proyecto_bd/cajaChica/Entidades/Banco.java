@@ -1,32 +1,58 @@
 package proyecto_bd.cajaChica.Entidades;
 
 public class Banco {
-    private int idBanco;
-    private String nombreBanco;
-    private String direccionBanco;
-    public Banco(int idBanco, String nombreBanco, String direccionBanco) {
-        this.idBanco = idBanco;
-        this.nombreBanco = nombreBanco;
-        this.direccionBanco = direccionBanco;
-    }
-    public int getIdBanco() {
-        return idBanco;
-    }
-    public void setIdBanco(int idBanco) {
-        this.idBanco = idBanco;
-    }
-    public String getNombreBanco() {
-        return nombreBanco;
-    }
-    public void setNombreBanco(String nombreBanco) {
-        this.nombreBanco = nombreBanco;
-    }
-    public String getDireccionBanco() {
-        return direccionBanco;
-    }
-    public void setDireccionBanco(String direccionBanco) {
-        this.direccionBanco = direccionBanco;
+    private int id;
+    private String nombre;
+    private String numeroCuenta;
+    private double saldo;
+
+    public Banco(String nombre, String numeroCuenta, double saldo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.numeroCuenta = numeroCuenta;
+        this.saldo = saldo;
     }
 
-    
+    // Getters y Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getNumeroCuenta() {
+        return numeroCuenta;
+    }
+
+    public void setNumeroCuenta(String numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    @Override
+    public String toString() {
+        return "Banco{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", numeroCuenta='" + numeroCuenta + '\'' +
+                ", saldo=" + saldo +
+                '}';
+    }
 }

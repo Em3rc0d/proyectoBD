@@ -52,7 +52,4 @@ public class EntregaDinero {
     public void setFechaEntrega(String fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
-    
-    
-
 }

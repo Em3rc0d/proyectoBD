@@ -14,5 +14,11 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>12.6.2.jre11</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+            <version>42.7.1</version>
+        </dependency>
     </dependencies>
 </project>
