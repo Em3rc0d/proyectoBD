@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import proyecto_bd.cajaChica.Entidades.Banco;
-
+//NOELIMINAR, USAR DE EJEMPLO
 public class BancoDAO {
     private Connection conexion;
 

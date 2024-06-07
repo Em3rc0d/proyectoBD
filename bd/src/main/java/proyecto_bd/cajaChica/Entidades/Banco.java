@@ -1,5 +1,5 @@
 package proyecto_bd.cajaChica.Entidades;
-
+//NOELIMINAR, USAR DE EJEMPLO
 public class Banco {
     private int id;
     private String nombre;
