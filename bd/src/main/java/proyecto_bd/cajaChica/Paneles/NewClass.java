@@ -8,10 +8,6 @@ import proyecto_bd.cajaChica.Conexion.ConexionBD;
 import proyecto_bd.cajaChica.Dao.EntregaDineroDAO;
 import proyecto_bd.cajaChica.Entidades.EntregaDinero;
 
-/**
- *
- * @author farid
- */
 public class NewClass {
     public static void main(String[] args){
         ConexionBD conexionBD = new ConexionBD();
