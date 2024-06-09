@@ -16,7 +16,7 @@ public class NewClass {
         if (conn != null) {
             System.out.println("Conexión establecida con éxito.");
 
-            EntregaDinero entregaDinero = new EntregaDinero(1, 1, Date.valueOf("2023-05-01"), 500.00, "Entrega de dinero", 1);
+            EntregaDinero entregaDinero = new EntregaDinero(1, 1, Date.valueOf("2023-06-08"), 900.00, "Entrega de dinero", 1);
             EntregaDineroDAO entregaDineroDAO = new EntregaDineroDAO(conn);
             
             try{
