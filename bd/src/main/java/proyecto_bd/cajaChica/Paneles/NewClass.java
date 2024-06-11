@@ -8,10 +8,6 @@ import proyecto_bd.cajaChica.Conexion.ConexionBD;
 import proyecto_bd.cajaChica.Dao.EntregaDineroDAO;
 import proyecto_bd.cajaChica.Entidades.EntregaDinero;
 
-/**
- *
- * @author farid
- */
 public class NewClass {
     public static void main(String[] args){
         ConexionBD conexionBD = new ConexionBD();
@@ -20,7 +16,11 @@ public class NewClass {
         if (conn != null) {
             System.out.println("Conexión establecida con éxito.");
 
+<<<<<<< HEAD
             EntregaDinero entregaDinero = new EntregaDinero(1, 1, Date.valueOf("2023-05-01"), 500.00, "Entrega de dinero", 1);
+=======
+            EntregaDinero entregaDinero = new EntregaDinero(1, 1, Date.valueOf("2023-06-08"), 900.00, "Entrega de dinero", 1);
+>>>>>>> 558abc28caf34bf68abf3de7feab646c91af29a9
             EntregaDineroDAO entregaDineroDAO = new EntregaDineroDAO(conn);
             
             try{
