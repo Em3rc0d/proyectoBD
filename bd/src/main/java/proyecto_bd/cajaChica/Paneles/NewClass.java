@@ -1,15 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyecto_bd.cajaChica.Paneles;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 
 import proyecto_bd.cajaChica.Conexion.ConexionBD;
-import proyecto_bd.cajaChica.Dao.BancoDAO;
-import proyecto_bd.cajaChica.Entidades.Banco;
+import proyecto_bd.cajaChica.Dao.EntregaDineroDAO;
+import proyecto_bd.cajaChica.Entidades.EntregaDinero;
 
 /**
  *
@@ -21,37 +18,28 @@ public class NewClass {
         Connection conn = conexionBD.establecerConexion();
 
         if (conn != null) {
-            System.out.println("Conexi贸n establecida con 茅xito.");
+            System.out.println("Conexi髇 establecida con 閤ito.");
 
-            // Creamos un objeto Banco
-            Banco banco = new Banco("Banco de Prueba", "123456789", 10000.00);
-
-            // Creamos un objeto BancoDAO
-            BancoDAO bancoDAO = new BancoDAO(conn);
-
-            try {
-                // Insertamos el banco en la base de datos
-                bancoDAO.insertar(banco);
-                System.out.println("Banco insertado correctamente.");
-
-                // Recuperamos todos los bancos de la base de datos y los mostramos
-                System.out.println("Listado de bancos:");
-                bancoDAO.obtenerBancos().forEach(System.out::println);
+            EntregaDinero entregaDinero = new EntregaDinero(1, 1, Date.valueOf("2023-05-01"), 500.00, "Entrega de dinero", 1);
+            EntregaDineroDAO entregaDineroDAO = new EntregaDineroDAO(conn);
+            
+            try{
+                entregaDineroDAO.insertar(entregaDinero);
+                System.out.println("Entrega de dinero insertada correctamente.");
 
             } catch (SQLException e) {
-                System.out.println("Error al insertar el banco: " + e.getMessage());
+                System.out.println("Error al insertar la entrega de dinero: " + e.getMessage());
             } finally {
                 try {
-                    // Cerramos la conexi贸n
+                    // Cerramos la conexi髇
                     conn.close();
-                    System.out.println("Conexi贸n cerrada.");
+                    System.out.println("Conexi髇 cerrada.");
                 } catch (SQLException e) {
-                    System.out.println("Error al cerrar la conexi贸n: " + e.getMessage());
+                    System.out.println("Error al cerrar la conexi髇: " + e.getMessage());
                 }
             }
-
         } else {
-            System.out.println("Fallo en la conexi贸n.");
+            System.out.println("Fallo en la conexi髇.");
         }
         
     }
