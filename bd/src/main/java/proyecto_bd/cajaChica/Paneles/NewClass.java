@@ -14,9 +14,10 @@ public class NewClass {
         Connection conn = conexionBD.establecerConexion();
 
         if (conn != null) {
-            System.out.println("Conexi贸n establecida con 茅xito.");
+            System.out.println("Conexi髇 establecida con 閤ito.");
 
             EntregaDinero entregaDinero = new EntregaDinero(1, 1, Date.valueOf("2023-05-01"), 500.00, "Entrega de dinero", 1);
+           
             EntregaDineroDAO entregaDineroDAO = new EntregaDineroDAO(conn);
             
             try{
@@ -27,15 +28,15 @@ public class NewClass {
                 System.out.println("Error al insertar la entrega de dinero: " + e.getMessage());
             } finally {
                 try {
-                    // Cerramos la conexi贸n
+                    // Cerramos la conexi髇
                     conn.close();
-                    System.out.println("Conexi贸n cerrada.");
+                    System.out.println("Conexi髇 cerrada.");
                 } catch (SQLException e) {
-                    System.out.println("Error al cerrar la conexi贸n: " + e.getMessage());
+                    System.out.println("Error al cerrar la conexi髇: " + e.getMessage());
                 }
             }
         } else {
-            System.out.println("Fallo en la conexi贸n.");
+            System.out.println("Fallo en la conexi髇.");
         }
         
     }
