@@ -1,6 +1,7 @@
 package proyecto_bd.cajaChica.Dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,6 +42,33 @@ public class CajaBancoDAO {
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setLong(1, idCajaBanco);
             pst.executeUpdate();
+        }
+    }
+
+    public void eliminar(Date fecha) throws SQLException {
+        String sql = "DELETE FROM CajaBanco WHERE fecha = ?";
+        try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
+            pst.setDate(1, fecha);
+            pst.executeUpdate();
+        }
+    }
+
+    public List<CajaBanco> obtenerCajaBancos(Date fecha) throws SQLException {
+        String sql = "SELECT * FROM CajaBanco WHERE fecha = ?"; 
+        try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
+            pst.setDate(1, fecha);
+            try (ResultSet rs = pst.executeQuery()) {
+                List<CajaBanco> cajaBancos = new ArrayList<>();
+                while (rs.next()) {
+                    CajaBanco cajaBanco = new CajaBanco(
+                            rs.getDate("fecha"),
+                            rs.getFloat("monto"),
+                            rs.getInt("idCajero")
+                    );
+                    cajaBancos.add(cajaBanco);
+                }
+                return cajaBancos;
+            }
         }
     }
 

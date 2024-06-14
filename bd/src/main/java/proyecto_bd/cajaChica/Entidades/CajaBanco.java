@@ -5,10 +5,10 @@ import java.sql.Date;
 public class CajaBanco {
     private int idCajaBanco;
     private Date fecha;
-    private float monto;
+    private double monto;
     private int idCajero;
 
-    public CajaBanco(Date fecha, float monto, int idCajero) {
+    public CajaBanco(Date fecha, double monto, int idCajero) {
         this.fecha = fecha;
         this.monto = monto;
         this.idCajero = idCajero;
@@ -26,11 +26,11 @@ public class CajaBanco {
         this.fecha = fecha;
     }
 
-    public float getMonto() {
+    public double getMonto() {
         return monto;
     }
 
-    public void setMonto(float monto) {
+    public void setMonto(double monto) {
         this.monto = monto;
     }
 

@@ -1,6 +1,7 @@
 package proyecto_bd.cajaChica.Dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,6 +48,13 @@ public class DevolucionReposicionDAO {
         String sql = "DELETE FROM DevolucionReposicion WHERE id = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setInt(1, idDevReposicion);
+            pst.executeUpdate();
+        }
+    }
+    public void eliminar(Date fechaDevolucion) throws SQLException {
+        String sql = "DELETE FROM DevolucionReposicion WHERE fechaDevolucion = ?";
+        try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
+            pst.setDate(1, fechaDevolucion);
             pst.executeUpdate();
         }
     }
