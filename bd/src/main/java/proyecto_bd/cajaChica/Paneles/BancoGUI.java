@@ -23,6 +23,7 @@ public class BancoGUI extends JFrame {
         this.bancoDAO = new BancoDAO(conexion);
         initComponents();
         loadData();
+        setLocationRelativeTo(null);
     }
 
     private void initComponents() {

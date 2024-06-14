@@ -9,7 +9,7 @@ public class ConexionBD {
     Connection connect = null;
     String usuario = "usuario";
     String password = "usersql";
-    String bd = "proyectoBD";
+    String bd = "finalDB";
     String ip = "localhost";
     String port = "1433";
 

@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -26,6 +25,8 @@ public class DocumentoGUI extends JFrame {
         this.documentoDAO = new DocumentoDAO(conexion);
         initComponents();
         loadData();
+        setLocationRelativeTo(null);
+        setUndecorated(true); // Hace que la ventana sea undecorable
     }
 
     private void initComponents() {
@@ -35,6 +36,14 @@ public class DocumentoGUI extends JFrame {
         setLayout(new BorderLayout());
 
         JPanel panelForm = new JPanel(new GridLayout(3, 2));
+        JButton btnSalir = new JButton("Retornar");
+        btnSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                retornar();
+            }
+        });
+        add(btnSalir, BorderLayout.BEFORE_LINE_BEGINS);
         panelForm.add(new JLabel("ID Rendición Documento:"));
         txtIdRendicionDocumento = new JTextField();
         panelForm.add(txtIdRendicionDocumento);
@@ -79,6 +88,11 @@ public class DocumentoGUI extends JFrame {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void retornar() {
+        new PrincipalGUI().setVisible(true);
+        setVisible(false);
     }
 
     private void guardarDocumento() {

@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DevolucionReposicionGUI extends JFrame {
+
     private DevolucionReposicionDAO devolucionReposicionDAO;
     private JTextField txtFecha, txtMonto, txtMotivo, txtTipoOperacion, txtIdCajero, txtIdCliente;
     private JTable tableDevolucionesReposiciones;
@@ -25,6 +26,8 @@ public class DevolucionReposicionGUI extends JFrame {
         this.devolucionReposicionDAO = new DevolucionReposicionDAO(conexion);
         initComponents();
         loadData();
+        setLocationRelativeTo(null);
+        setUndecorated(true); // Hace que la ventana sea undecorable
     }
 
     private void initComponents() {
@@ -34,6 +37,14 @@ public class DevolucionReposicionGUI extends JFrame {
         setLayout(new BorderLayout());
 
         JPanel panelForm = new JPanel(new GridLayout(7, 2));
+        JButton btnSalir = new JButton("Retornar");
+        btnSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                retornar();
+            }
+        });
+        add(btnSalir, BorderLayout.BEFORE_LINE_BEGINS);
         panelForm.add(new JLabel("Fecha (YYYY-MM-DD):"));
         txtFecha = new JTextField();
         panelForm.add(txtFecha);
@@ -90,14 +101,19 @@ public class DevolucionReposicionGUI extends JFrame {
             List<DevolucionReposicion> devolucionesReposiciones = devolucionReposicionDAO
                     .obtenerDevolucionesReposicion();
             for (DevolucionReposicion devolucionReposicion : devolucionesReposiciones) {
-                model.addRow(new Object[] { devolucionReposicion.getFechaDevolucion(),
-                        devolucionReposicion.getMontoDevolucion(), devolucionReposicion.getMotivo(),
-                        devolucionReposicion.getTipoOperacion(), devolucionReposicion.getIdCajero(),
-                        devolucionReposicion.getIdCliente() });
+                model.addRow(new Object[]{devolucionReposicion.getFechaDevolucion(),
+                    devolucionReposicion.getMontoDevolucion(), devolucionReposicion.getMotivo(),
+                    devolucionReposicion.getTipoOperacion(), devolucionReposicion.getIdCajero(),
+                    devolucionReposicion.getIdCliente()});
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void retornar() {
+        new PrincipalGUI().setVisible(true);
+        setVisible(false);
     }
 
     private void guardarDevolucionReposicion() {
@@ -113,9 +129,9 @@ public class DevolucionReposicionGUI extends JFrame {
         try {
             devolucionReposicionDAO.insertar(devolucionReposicion);
             model.addRow(
-                    new Object[] { devolucionReposicion.getFechaDevolucion(), devolucionReposicion.getMontoDevolucion(),
-                            devolucionReposicion.getMotivo(), devolucionReposicion.getTipoOperacion(),
-                            devolucionReposicion.getIdCajero(), devolucionReposicion.getIdCliente() });
+                    new Object[]{devolucionReposicion.getFechaDevolucion(), devolucionReposicion.getMontoDevolucion(),
+                        devolucionReposicion.getMotivo(), devolucionReposicion.getTipoOperacion(),
+                        devolucionReposicion.getIdCajero(), devolucionReposicion.getIdCliente()});
             JOptionPane.showMessageDialog(this, "Devolución/Reposición guardada exitosamente.");
         } catch (SQLException e) {
             e.printStackTrace();

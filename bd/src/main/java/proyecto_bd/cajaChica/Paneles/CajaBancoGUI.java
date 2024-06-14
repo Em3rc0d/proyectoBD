@@ -26,6 +26,8 @@ public class CajaBancoGUI extends JFrame {
         this.cajaBancoDAO = new CajaBancoDAO(conexion);
         initComponents();
         loadData();
+        setLocationRelativeTo(null);
+        setUndecorated(true); // Hace que la ventana sea undecorable
     }
 
     private void initComponents() {
@@ -35,6 +37,14 @@ public class CajaBancoGUI extends JFrame {
         setLayout(new BorderLayout());
 
         JPanel panelForm = new JPanel(new GridLayout(4, 2));
+        JButton btnSalir = new JButton("Retornar");
+        btnSalir.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                retornar();
+            }
+        });
+        add(btnSalir, BorderLayout.BEFORE_LINE_BEGINS);
         panelForm.add(new JLabel("Fecha (YYYY-MM-DD):"));
         txtFecha = new JTextField();
         panelForm.add(txtFecha);
@@ -85,6 +95,10 @@ public class CajaBancoGUI extends JFrame {
         }
     }
 
+    private void retornar(){
+        new PrincipalGUI().setVisible(true);
+        setVisible(false);
+    }
     private void guardarCajaBanco() {
         String fecha = txtFecha.getText();
         double monto = Double.parseDouble(txtMonto.getText());
