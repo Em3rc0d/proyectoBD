@@ -1,15 +1,15 @@
 
 package proyecto_bd.cajaChica.Entidades;
 
-public class estado {
+public class Estado {
 
     private int id;
     private String descripcion;
 
-    public estado() {
+    public Estado() {
     }
 
-    public estado(int id, String descripcion) {
+    public Estado(int id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
     }

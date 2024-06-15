@@ -1,6 +1,6 @@
 package proyecto_bd.cajaChica.Dao;
 
-import proyecto_bd.cajaChica.Entidades.usuario;
+import proyecto_bd.cajaChica.Entidades.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,77 +8,81 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class usuarioDAO {
+public class UsuarioDAO {
 
     private Connection connection;
 
-    public usuarioDAO(Connection connection) {
+    public UsuarioDAO(Connection connection) {
         this.connection = connection;
     }
 
-    public List<usuario> obtenerTodosLosUsuarios() throws SQLException {
-        List<usuario> usuarios = new ArrayList<>();
-        String query = "SELECT * FROM usuarios";
+    public List<Usuario> obtenerTodosLosUsuarios() throws SQLException {
+        List<Usuario> usuarios = new ArrayList<>();
+        String query = "SELECT * FROM Usuario";
         try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                usuario usuario = new usuario(
-                        rs.getInt("id"),
+                Usuario usuario = new Usuario(
                         rs.getString("nombre"),
                         rs.getString("apellido"),
                         rs.getString("email"),
-                        rs.getString("password")
+                        rs.getString("telefono"),
+                        rs.getDate("fechaIngreso")
                 );
+                usuario.setId(rs.getInt("idPersonal"));
                 usuarios.add(usuario);
             }
         }
         return usuarios;
     }
 
-    public usuario obtenerUsuarioPorId(int id) throws SQLException {
-        usuario usuario = null;
-        String query = "SELECT * FROM usuarios WHERE id = ?";
+    public Usuario obtenerUsuarioPorId(int id) throws SQLException {
+        Usuario usuario = null;
+        String query = "SELECT * FROM Usuario WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    usuario = new usuario(
-                            rs.getInt("id"),
+                    usuario = new Usuario(
                             rs.getString("nombre"),
                             rs.getString("apellido"),
                             rs.getString("email"),
-                            rs.getString("password")
+                            rs.getString("telefono"),
+                            rs.getDate("fechaIngreso")
                     );
+                    usuario.setId(rs.getInt("idPersonal"));
                 }
             }
         }
         return usuario;
     }
 
-    public void agregarUsuario(usuario usuario) throws SQLException {
-        String query = "INSERT INTO usuarios (nombre, apellido, email, password) VALUES (?, ?, ?, ?)";
+    public void agregarUsuario(Usuario usuario) throws SQLException {
+        String query = "INSERT INTO Usuario (nombre, apellido, email, telefono, fechaIngreso) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getApellido());
             stmt.setString(3, usuario.getEmail());
-            stmt.setString(4, usuario.getPassword());
+            stmt.setString(4, usuario.getTelefono());
+            stmt.setDate(5, usuario.getFechaIngreso());
             stmt.executeUpdate();
         }
     }
 
-    public void actualizarUsuario(usuario usuario) throws SQLException {
-        String query = "UPDATE usuarios SET nombre = ?, apellido = ?, email = ?, password = ? WHERE id = ?";
+    public void actualizarUsuario(Usuario usuario) throws SQLException {
+        String query = "UPDATE Usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, fechaIngreso = ? WHERE idPersonal = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getApellido());
             stmt.setString(3, usuario.getEmail());
-            stmt.setString(4, usuario.getPassword());
-            stmt.setInt(5, usuario.getId());
+            stmt.setString(4, usuario.getTelefono());
+            stmt.setDate(5, usuario.getFechaIngreso());
+            stmt.setInt(6, usuario.getId());
             stmt.executeUpdate();
         }
     }
 
     public void eliminarUsuario(int id) throws SQLException {
-        String query = "DELETE FROM usuarios WHERE id = ?";
+        String query = "DELETE FROM Usuario WHERE idPersonal = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();

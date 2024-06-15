@@ -13,13 +13,6 @@ public class CajaBanco {
         this.monto = monto;
         this.idCajero = idCajero;
     }
-    
-    public CajaBanco(int idCajaBanco, Date fecha, double monto, int idCajero) {
-        this.idCajaBanco = idCajaBanco;
-        this.fecha = fecha;
-        this.monto = monto;
-        this.idCajero = idCajero;
-    }
 
     public int getIdCajaBanco() {
         return idCajaBanco;

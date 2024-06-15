@@ -25,7 +25,7 @@ public class CajeroDAO {
     }
 
     public void actualizar(Cajero cajero) throws SQLException {
-        String sql = "UPDATE Cajero SET idUsuario = ? WHERE id = ?";
+        String sql = "UPDATE Cajero SET idUsuario = ? WHERE idCajero = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) { 
             pst.setInt(1, cajero.getIdUsuario());
             pst.setInt(2, cajero.getIdCajero());
@@ -34,7 +34,7 @@ public class CajeroDAO {
     }   
 
     public void eliminar(int idCajero) throws SQLException {
-        String sql = "DELETE FROM Cajero WHERE id = ?";
+        String sql = "DELETE FROM Cajero WHERE idCajero = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setInt(1, idCajero);
             pst.executeUpdate();
@@ -56,7 +56,7 @@ public class CajeroDAO {
     }
 
     public Cajero obtenerCajero(int idCajero) throws SQLException {
-        String sql = "SELECT * FROM Cajero WHERE id = ?";
+        String sql = "SELECT * FROM Cajero WHERE idCajero = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setInt(1, idCajero);
             ResultSet rs = pst.executeQuery();

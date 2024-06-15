@@ -5,7 +5,9 @@ import javax.swing.table.DefaultTableModel;
 
 import proyecto_bd.cajaChica.Conexion.ConexionBD;
 import proyecto_bd.cajaChica.Dao.CajaBancoDAO;
+import proyecto_bd.cajaChica.Dao.CajeroDAO;
 import proyecto_bd.cajaChica.Entidades.CajaBanco;
+import proyecto_bd.cajaChica.Entidades.Cajero;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,13 +18,16 @@ import java.util.List;
 
 public class CajaBancoGUI extends JFrame {
     private CajaBancoDAO cajaBancoDAO;
-    private JTextField txtFecha, txtMonto, txtIdCajero;
+    private CajeroDAO cajeroDAO;
+    private JTextField txtFecha, txtMonto;
+    private JComboBox<Integer> comboBoxIdCajero;
     private JTable tableCajaBancos;
     private DefaultTableModel model;
     private int selectedIdCajaBanco;
 
     public CajaBancoGUI(Connection conexion) {
         this.cajaBancoDAO = new CajaBancoDAO(conexion);
+        this.cajeroDAO = new CajeroDAO(conexion);
         initComponents();
         loadData();
         setLocationRelativeTo(null);
@@ -51,8 +56,9 @@ public class CajaBancoGUI extends JFrame {
         txtMonto = new JTextField();
         panelForm.add(txtMonto);
         panelForm.add(new JLabel("ID Cajero:"));
-        txtIdCajero = new JTextField();
-        panelForm.add(txtIdCajero);
+        comboBoxIdCajero = new JComboBox<>();
+        cargarCajeros();
+        panelForm.add(comboBoxIdCajero);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -89,14 +95,12 @@ public class CajaBancoGUI extends JFrame {
                 int selectedRow = tableCajaBancos.getSelectedRow();
                 txtFecha.setText(model.getValueAt(selectedRow, 1).toString());
                 txtMonto.setText(model.getValueAt(selectedRow, 2).toString());
-                txtIdCajero.setText(model.getValueAt(selectedRow, 3).toString());
+                comboBoxIdCajero.setSelectedItem(Integer.parseInt(model.getValueAt(selectedRow, 3).toString()));
                 // Asegúrate de tener el idCajaBanco también, por ejemplo, en una columna oculta.
                 selectedIdCajaBanco = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
             }
         });
 
-        
-        
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(new ActionListener() {
             @Override
@@ -119,6 +123,17 @@ public class CajaBancoGUI extends JFrame {
         }
     }
 
+    private void cargarCajeros() {
+        try {
+            List<Cajero> cajeros = cajeroDAO.obtenerCajeros();
+            for (Cajero cajero : cajeros) {
+                comboBoxIdCajero.addItem(cajero.getIdCajero());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void retornar() {
         new PrincipalGUI().setVisible(true);
         setVisible(false);
@@ -127,12 +142,11 @@ public class CajaBancoGUI extends JFrame {
     private void guardarCajaBanco() {
         String fecha = txtFecha.getText();
         double monto = Double.parseDouble(txtMonto.getText());
-        int idCajero = Integer.parseInt(txtIdCajero.getText());
+        int idCajero = (int) comboBoxIdCajero.getSelectedItem();
 
         CajaBanco cajaBanco = new CajaBanco(java.sql.Date.valueOf(fecha), monto, idCajero);
         try {
             cajaBancoDAO.insertar(cajaBanco);
-            // Actualiza la fila en el modelo de la tabla
             loadData();
             JOptionPane.showMessageDialog(this, "CajaBanco guardado exitosamente.");
         } catch (SQLException e) {
@@ -140,18 +154,17 @@ public class CajaBancoGUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al guardar CajaBanco.");
         }
     }
-    
+
     private void actualizarCajaBanco() {
         String fecha = txtFecha.getText();
         double monto = Double.parseDouble(txtMonto.getText());
-        int idCajero = Integer.parseInt(txtIdCajero.getText());
+        int idCajero = (int) comboBoxIdCajero.getSelectedItem();
 
         CajaBanco cajaBanco = new CajaBanco(java.sql.Date.valueOf(fecha), monto, idCajero);
         cajaBanco.setIdCajaBanco(selectedIdCajaBanco); // Establece el ID del registro a actualizar
 
         try {
             cajaBancoDAO.actualizar(cajaBanco);
-            // Actualiza la fila en el modelo de la tabla
             loadData();
             JOptionPane.showMessageDialog(this, "CajaBanco actualizado exitosamente.");
         } catch (SQLException e) {
@@ -166,7 +179,7 @@ public class CajaBancoGUI extends JFrame {
             int idCajaBanco = (int) model.getValueAt(selectedRow, 0);
             try {
                 cajaBancoDAO.eliminar(idCajaBanco);
-                model.removeRow(selectedRow);
+                loadData();
                 JOptionPane.showMessageDialog(this, "CajaBanco eliminado exitosamente.");
             } catch (SQLException e) {
                 e.printStackTrace();

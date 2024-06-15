@@ -17,7 +17,7 @@ public class CajaBancoDAO {
         this.conexion = conexion;
     }
 
-    public int insertar(CajaBanco cajaBanco) throws SQLException {
+    public void insertar(CajaBanco cajaBanco) throws SQLException {
         String sql = "INSERT INTO CajaBanco (fecha, monto, idCajero) VALUES (?, ?, ?)";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pst.setDate(1, cajaBanco.getFecha());
@@ -27,15 +27,6 @@ public class CajaBancoDAO {
             int filasInsertadas = pst.executeUpdate();
             if (filasInsertadas == 0) {
                 throw new SQLException("No se pudo insertar el registro.");
-            }
-
-            // Obtener el ID generado
-            try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1); // Devolver el ID generado
-                } else {
-                    throw new SQLException("No se pudo obtener el ID generado.");
-                }
             }
         }
     }
@@ -60,14 +51,6 @@ public class CajaBancoDAO {
         }
     }
 
-    public void eliminar(Date fecha) throws SQLException {
-        String sql = "DELETE FROM CajaBanco WHERE fecha = ?";
-        try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
-            pst.setDate(1, fecha);
-            pst.executeUpdate();
-        }
-    }
-
     public List<CajaBanco> obtenerCajaBancos() throws SQLException {
         String sql = "SELECT * FROM CajaBanco";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql);
@@ -75,12 +58,12 @@ public class CajaBancoDAO {
 
             List<CajaBanco> cajaBancos = new ArrayList<>();
             while (rs.next()) {
-                CajaBanco cajaBanco = new CajaBanco(
-                        rs.getInt("idCajaBanco"),
+                CajaBanco cajaBanco = new CajaBanco(                        
                         rs.getDate("fecha"),
                         rs.getFloat("monto"),
                         rs.getInt("idCajero")
                 );
+                cajaBanco.setIdCajaBanco(rs.getInt("idCajaBanco"));
                 cajaBancos.add(cajaBanco);
             }
             return cajaBancos;

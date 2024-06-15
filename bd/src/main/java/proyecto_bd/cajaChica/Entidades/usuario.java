@@ -1,20 +1,21 @@
 package proyecto_bd.cajaChica.Entidades;
 
-public class usuario {
+import java.sql.Date;
+
+public class Usuario {
     private int id;
     private String nombre;
     private String apellido;
     private String email;
-    private String password;
+    private String telefono;
+    private Date fechaIngreso;
 
-    public usuario() {}
-
-    public usuario(int id, String nombre, String apellido, String email, String password) {
-        this.id = id;
+    public Usuario(String nombre, String apellido, String email, String telefono, Date fechaIngreso) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
-        this.password = password;
+        this.telefono = telefono;
+        this.fechaIngreso = fechaIngreso;
     }
 
     public int getId() {
@@ -49,12 +50,21 @@ public class usuario {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
+
+    public Date getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(Date fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
+    
 }
 
