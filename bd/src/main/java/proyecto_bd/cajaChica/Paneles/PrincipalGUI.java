@@ -38,6 +38,8 @@ public class PrincipalGUI extends javax.swing.JFrame {
         btnDevRep = new javax.swing.JButton();
         btnDocumento = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
+        btnCliente = new javax.swing.JButton();
+        btnUsuario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -87,19 +89,37 @@ public class PrincipalGUI extends javax.swing.JFrame {
             }
         });
 
+        btnCliente.setText("Cliente");
+        btnCliente.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, java.awt.Color.black, null));
+        btnCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClienteActionPerformed(evt);
+            }
+        });
+
+        btnUsuario.setText("Usuario");
+        btnUsuario.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, java.awt.Color.black, null));
+        btnUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuarioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCajero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCajaBanco, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnDevRep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -110,14 +130,18 @@ public class PrincipalGUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnCajaBanco)
                 .addGap(18, 18, 18)
+                .addComponent(btnUsuario)
+                .addGap(18, 18, 18)
                 .addComponent(btnCajero)
+                .addGap(18, 18, 18)
+                .addComponent(btnCliente)
                 .addGap(18, 18, 18)
                 .addComponent(btnDevRep)
                 .addGap(18, 18, 18)
                 .addComponent(btnDocumento)
                 .addGap(18, 18, 18)
                 .addComponent(btnSalir)
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -162,6 +186,16 @@ public class PrincipalGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSalirActionPerformed
 
+    private void btnClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteActionPerformed
+        new ClienteGUI(conn).setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_btnClienteActionPerformed
+
+    private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
+        new UsuarioGUI(conn).setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_btnUsuarioActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -201,9 +235,11 @@ public class PrincipalGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCajaBanco;
     private javax.swing.JButton btnCajero;
+    private javax.swing.JButton btnCliente;
     private javax.swing.JButton btnDevRep;
     private javax.swing.JButton btnDocumento;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JButton btnUsuario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
