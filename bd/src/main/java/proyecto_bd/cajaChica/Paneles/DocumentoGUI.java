@@ -20,6 +20,7 @@ public class DocumentoGUI extends JFrame {
     private JTextField txtIdRendicionDocumento, txtDescripcion;
     private JTable tableDocumentos;
     private DefaultTableModel model;
+    private int selectedIdDocumento = -1;
 
     public DocumentoGUI(Connection conexion) {
         this.documentoDAO = new DocumentoDAO(conexion);
@@ -63,11 +64,33 @@ public class DocumentoGUI extends JFrame {
         add(panelForm, BorderLayout.NORTH);
 
         model = new DefaultTableModel();
+        model.addColumn("ID");
         model.addColumn("ID Rendición Documento");
         model.addColumn("Descripción");
 
         tableDocumentos = new JTable(model);
         add(new JScrollPane(tableDocumentos), BorderLayout.CENTER);
+
+        JButton btnActualizar = new JButton("Actualizar");
+        btnActualizar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarDocumento();
+            }
+        });
+        panelForm.add(btnActualizar);
+
+        tableDocumentos.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int selectedRow = tableDocumentos.getSelectedRow();
+                if (selectedRow != -1) {
+                    txtIdRendicionDocumento.setText(model.getValueAt(selectedRow, 1).toString());
+                    txtDescripcion.setText(model.getValueAt(selectedRow, 2).toString());
+                    selectedIdDocumento = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
+                }
+            }
+        });
 
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(new ActionListener() {
@@ -80,10 +103,15 @@ public class DocumentoGUI extends JFrame {
     }
 
     private void loadData() {
+        model.setRowCount(0);
         try {
             List<Documento> documentos = documentoDAO.obtenerDocumentos();
             for (Documento documento : documentos) {
-                model.addRow(new Object[]{documento.getIdRendicionDocumento(), documento.getDescripcion()});
+                model.addRow(new Object[]{
+                    documento.getIdDocumento(),
+                    documento.getIdRendicionDocumento(),
+                    documento.getDescripcion()
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,14 +127,35 @@ public class DocumentoGUI extends JFrame {
         int idRendicionDocumento = Integer.parseInt(txtIdRendicionDocumento.getText());
         String descripcion = txtDescripcion.getText();
 
-        Documento documento = new Documento(idRendicionDocumento, descripcion);
+        Documento documento = new Documento(0, idRendicionDocumento, descripcion);
         try {
             documentoDAO.insertar(documento);
-            model.addRow(new Object[]{documento.getIdRendicionDocumento(), documento.getDescripcion()});
+            loadData();
             JOptionPane.showMessageDialog(this, "Documento guardado exitosamente.");
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al guardar el documento.");
+        }
+    }
+
+    private void actualizarDocumento() {
+        if (selectedIdDocumento == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una fila para actualizar.");
+            return;
+        }
+
+        int idRendicionDocumento = Integer.parseInt(txtIdRendicionDocumento.getText());
+        String descripcion = txtDescripcion.getText();
+
+        Documento documento = new Documento(selectedIdDocumento, idRendicionDocumento, descripcion);
+
+        try {
+            documentoDAO.actualizar(documento);
+            loadData();
+            JOptionPane.showMessageDialog(this, "Documento actualizado exitosamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar el documento.");
         }
     }
 
@@ -116,7 +165,7 @@ public class DocumentoGUI extends JFrame {
             int idDocumento = (int) model.getValueAt(selectedRow, 0);
             try {
                 documentoDAO.eliminar(idDocumento);
-                model.removeRow(selectedRow);
+                loadData();
                 JOptionPane.showMessageDialog(this, "Documento eliminado exitosamente.");
             } catch (SQLException e) {
                 e.printStackTrace();

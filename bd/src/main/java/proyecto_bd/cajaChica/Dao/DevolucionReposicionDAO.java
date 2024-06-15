@@ -31,7 +31,7 @@ public class DevolucionReposicionDAO {
     }
 
     public void actualizar(DevolucionReposicion devolucionReposicion) throws SQLException {
-        String sql = "UPDATE DevolucionReposicion SET fechaDevolucion = ?, montoDevolucion = ?, motivo = ?, tipoOperacion = ?, idCajero = ?, idCliente = ? WHERE id = ?";
+        String sql = "UPDATE DevolucionReposicion SET fechaDevolucion = ?, montoDevolucion = ?, motivo = ?, tipoOperacion = ?, idCajero = ?, idCliente = ? WHERE idDevReposicion = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setDate(1, devolucionReposicion.getFechaDevolucion());
             pst.setDouble(2, devolucionReposicion.getMontoDevolucion());
@@ -66,7 +66,7 @@ public class DevolucionReposicionDAO {
 
             List<DevolucionReposicion> devolucionesReposicion = new ArrayList<>();
             while (rs.next()) {
-                DevolucionReposicion devolucionReposicion = new DevolucionReposicion(rs.getDate("fechaDevolucion"),
+                DevolucionReposicion devolucionReposicion = new DevolucionReposicion(rs.getInt("idDevReposicion"), rs.getDate("fechaDevolucion"),
                         rs.getDouble("montoDevolucion"), rs.getString("motivo"), rs.getString("tipoOperacion"),
                         rs.getInt("idCajero"), rs.getInt("idCliente"));
                 devolucionesReposicion.add(devolucionReposicion);

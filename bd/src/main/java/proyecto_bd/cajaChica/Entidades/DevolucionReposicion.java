@@ -10,6 +10,7 @@ public class DevolucionReposicion {
     String tipoOperacion;
     int idCajero;
     int idCliente;
+    
     public DevolucionReposicion(Date fechaDevolucion, double montoDevolucion, String motivo,
             String tipoOperacion, int idCajero, int idCliente) {
         this.idDevReposicion = idDevReposicion;
@@ -20,6 +21,19 @@ public class DevolucionReposicion {
         this.idCajero = idCajero;
         this.idCliente = idCliente;
     }
+
+    public DevolucionReposicion(int idDevReposicion, Date fechaDevolucion, double montoDevolucion, String motivo, String tipoOperacion, int idCajero, int idCliente) {
+        this.idDevReposicion = idDevReposicion;
+        this.fechaDevolucion = fechaDevolucion;
+        this.montoDevolucion = montoDevolucion;
+        this.motivo = motivo;
+        this.tipoOperacion = tipoOperacion;
+        this.idCajero = idCajero;
+        this.idCliente = idCliente;
+    }
+    
+    
+    
     public int getIdDevReposicion() {
         return idDevReposicion;
     }

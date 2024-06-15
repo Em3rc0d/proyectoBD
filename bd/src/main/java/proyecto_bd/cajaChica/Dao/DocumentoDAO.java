@@ -50,6 +50,7 @@ public class DocumentoDAO {
             List<Documento> documentos = new ArrayList<>();
             while (rs.next()) {
                 Documento documento = new Documento(
+                        rs.getInt("idDocumento"),
                         rs.getInt("idRendicionDocumento"),
                         rs.getString("descripcion")
                 );

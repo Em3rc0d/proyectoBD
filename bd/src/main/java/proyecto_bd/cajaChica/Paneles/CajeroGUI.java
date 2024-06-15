@@ -85,6 +85,7 @@ public class CajeroGUI extends JFrame {
     }
 
     private void loadData() {
+        model.setRowCount(0);
         try {
             List<Cajero> cajeros = cajeroDAO.obtenerCajeros();
             for (Cajero cajero : cajeros) {

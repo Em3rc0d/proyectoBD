@@ -10,6 +10,12 @@ public class Documento {
         this.descripcion = descripcion;
     }
 
+    public Documento(int idDocumento, int idRendicionDocumento, String descripcion) {
+        this.idDocumento = idDocumento;
+        this.idRendicionDocumento = idRendicionDocumento;
+        this.descripcion = descripcion;
+    }
+    
     public int getIdDocumento() {
         return idDocumento;
     }

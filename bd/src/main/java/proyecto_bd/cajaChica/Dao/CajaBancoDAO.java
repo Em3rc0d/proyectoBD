@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import proyecto_bd.cajaChica.Entidades.CajaBanco;
@@ -16,15 +17,29 @@ public class CajaBancoDAO {
         this.conexion = conexion;
     }
 
-    public void insertar(CajaBanco cajaBanco) throws SQLException {
+    public int insertar(CajaBanco cajaBanco) throws SQLException {
         String sql = "INSERT INTO CajaBanco (fecha, monto, idCajero) VALUES (?, ?, ?)";
-        try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
+        try (PreparedStatement pst = this.conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pst.setDate(1, cajaBanco.getFecha());
             pst.setDouble(2, cajaBanco.getMonto());
             pst.setInt(3, cajaBanco.getIdCajero());
-            pst.executeUpdate();
+
+            int filasInsertadas = pst.executeUpdate();
+            if (filasInsertadas == 0) {
+                throw new SQLException("No se pudo insertar el registro.");
+            }
+
+            // Obtener el ID generado
+            try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Devolver el ID generado
+                } else {
+                    throw new SQLException("No se pudo obtener el ID generado.");
+                }
+            }
         }
     }
+
 
     public void actualizar(CajaBanco cajaBanco) throws SQLException {
         String sql = "UPDATE CajaBanco SET fecha = ?, monto = ?, idCajero = ? WHERE idCajaBanco = ?";
@@ -37,7 +52,7 @@ public class CajaBancoDAO {
         }
     }
 
-    public void eliminar(Long idCajaBanco) throws SQLException {
+    public void eliminar(int idCajaBanco) throws SQLException {
         String sql = "DELETE FROM CajaBanco WHERE idCajaBanco = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setLong(1, idCajaBanco);
@@ -53,25 +68,6 @@ public class CajaBancoDAO {
         }
     }
 
-    public List<CajaBanco> obtenerCajaBancos(Date fecha) throws SQLException {
-        String sql = "SELECT * FROM CajaBanco WHERE fecha = ?"; 
-        try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
-            pst.setDate(1, fecha);
-            try (ResultSet rs = pst.executeQuery()) {
-                List<CajaBanco> cajaBancos = new ArrayList<>();
-                while (rs.next()) {
-                    CajaBanco cajaBanco = new CajaBanco(
-                            rs.getDate("fecha"),
-                            rs.getFloat("monto"),
-                            rs.getInt("idCajero")
-                    );
-                    cajaBancos.add(cajaBanco);
-                }
-                return cajaBancos;
-            }
-        }
-    }
-
     public List<CajaBanco> obtenerCajaBancos() throws SQLException {
         String sql = "SELECT * FROM CajaBanco";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql);
@@ -80,6 +76,7 @@ public class CajaBancoDAO {
             List<CajaBanco> cajaBancos = new ArrayList<>();
             while (rs.next()) {
                 CajaBanco cajaBanco = new CajaBanco(
+                        rs.getInt("idCajaBanco"),
                         rs.getDate("fecha"),
                         rs.getFloat("monto"),
                         rs.getInt("idCajero")
