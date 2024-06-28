@@ -37,7 +37,7 @@ public class UsuarioDAO {
 
     public Usuario obtenerUsuarioPorId(int id) throws SQLException {
         Usuario usuario = null;
-        String query = "SELECT * FROM Usuario WHERE id = ?";
+        String query = "SELECT * FROM Usuario WHERE idPersonal = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {

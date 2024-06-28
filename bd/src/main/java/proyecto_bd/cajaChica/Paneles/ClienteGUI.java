@@ -5,7 +5,9 @@ import javax.swing.table.DefaultTableModel;
 
 import proyecto_bd.cajaChica.Conexion.ConexionBD;
 import proyecto_bd.cajaChica.Dao.ClienteDAO;
+import proyecto_bd.cajaChica.Dao.UsuarioDAO;
 import proyecto_bd.cajaChica.Entidades.Cliente;
+import proyecto_bd.cajaChica.Entidades.Usuario;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +17,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ClienteGUI extends JFrame {
+
     private ClienteDAO clienteDAO;
+    private UsuarioDAO usuarioDAO;
     private JTextField txtIdUsuario;
     private JTable tableClientes;
     private DefaultTableModel model;
@@ -23,6 +27,7 @@ public class ClienteGUI extends JFrame {
 
     public ClienteGUI(Connection conexion) {
         this.clienteDAO = new ClienteDAO(conexion);
+        this.usuarioDAO = new UsuarioDAO(conexion);
         initComponents();
         loadData();
         setLocationRelativeTo(null);
@@ -61,7 +66,10 @@ public class ClienteGUI extends JFrame {
 
         model = new DefaultTableModel();
         model.addColumn("ID Cliente");
-        model.addColumn("ID Usuario");
+        model.addColumn("Nombre"); // Nombre del usuario
+        model.addColumn("Apellido"); // Apellido del usuario
+        model.addColumn("Email"); // Email del usuario
+        model.addColumn("Teléfono"); // Teléfono del usuario
 
         tableClientes = new JTable(model);
         add(new JScrollPane(tableClientes), BorderLayout.CENTER);
@@ -99,7 +107,14 @@ public class ClienteGUI extends JFrame {
         try {
             List<Cliente> clientes = clienteDAO.obtenerClientes();
             for (Cliente cliente : clientes) {
-                model.addRow(new Object[]{cliente.getIdCliente(), cliente.getIdUsuario()});
+                Usuario usuario = usuarioDAO.obtenerUsuarioPorId(cliente.getIdUsuario());
+                model.addRow(new Object[]{
+                    cliente.getIdCliente(),
+                    usuario.getNombre(),
+                    usuario.getApellido(),
+                    usuario.getEmail(),
+                    usuario.getTelefono()
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();

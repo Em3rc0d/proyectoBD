@@ -49,6 +49,7 @@ public class CajeroDAO {
             List<Cajero> cajeros = new ArrayList<>();
             while (rs.next()) {
                 Cajero cajero = new Cajero(rs.getInt("idUsuario"));
+                cajero.setIdCajero(rs.getInt("IdCajero"));
                 cajeros.add(cajero);
             }
             return cajeros;

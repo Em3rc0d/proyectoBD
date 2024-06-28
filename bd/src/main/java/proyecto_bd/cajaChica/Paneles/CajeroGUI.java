@@ -13,16 +13,20 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import proyecto_bd.cajaChica.Dao.UsuarioDAO;
+import proyecto_bd.cajaChica.Entidades.Usuario;
 
 public class CajeroGUI extends JFrame {
 
     private CajeroDAO cajeroDAO;
+    private UsuarioDAO usuarioDAO;
     private JTextField txtIdUsuario;
     private JTable tableCajeros;
     private DefaultTableModel model;
 
     public CajeroGUI(Connection conexion) {
         this.cajeroDAO = new CajeroDAO(conexion);
+        this.usuarioDAO = new UsuarioDAO(conexion);
         initComponents();
         loadData();
         setLocationRelativeTo(null);
@@ -69,7 +73,11 @@ public class CajeroGUI extends JFrame {
         add(panelForm, BorderLayout.NORTH);
 
         model = new DefaultTableModel();
-        model.addColumn("ID Usuario");
+        model.addColumn("ID Cajero");
+        model.addColumn("Nombre"); // Nombre del usuario
+        model.addColumn("Apellido"); // Apellido del usuario
+        model.addColumn("Email"); // Email del usuario
+        model.addColumn("Teléfono"); // Teléfono del usuario
 
         tableCajeros = new JTable(model);
         add(new JScrollPane(tableCajeros), BorderLayout.CENTER);
@@ -89,7 +97,14 @@ public class CajeroGUI extends JFrame {
         try {
             List<Cajero> cajeros = cajeroDAO.obtenerCajeros();
             for (Cajero cajero : cajeros) {
-                model.addRow(new Object[]{cajero.getIdUsuario()});
+                Usuario usuario = usuarioDAO.obtenerUsuarioPorId(cajero.getIdUsuario());
+                model.addRow(new Object[]{
+                    cajero.getIdCajero(),
+                    usuario.getNombre(),
+                    usuario.getApellido(),
+                    usuario.getEmail(),
+                    usuario.getTelefono()
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();

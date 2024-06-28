@@ -5,11 +5,10 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 public class ConexionBD {
-    //CREENSE UN USUARIO CON ESAS CREDENCIALES O EN SU DEFECTO, CAMBIAN USUARIO, PASSWORD Y BD(SIENDO ESTE EL NOMBRE QUE LE PONGAN A SU BASE DE DATOS EN SQLSERVER)
     Connection connect = null;
     String usuario = "usuario";
     String password = "usersql";
-    String bd = "proyectoBD";
+    String bd = "finalDB";
     String ip = "localhost";
     String port = "1433";
 
