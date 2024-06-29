@@ -20,7 +20,7 @@ public class ClienteGUI extends JFrame {
 
     private ClienteDAO clienteDAO;
     private UsuarioDAO usuarioDAO;
-    private JTextField txtIdUsuario;
+    private JComboBox<Usuario> comboUsuarios;
     private JTable tableClientes;
     private DefaultTableModel model;
     private int selectedIdCliente;
@@ -49,9 +49,10 @@ public class ClienteGUI extends JFrame {
             }
         });
         add(btnSalir, BorderLayout.BEFORE_LINE_BEGINS);
+        
         panelForm.add(new JLabel("ID Usuario:"));
-        txtIdUsuario = new JTextField();
-        panelForm.add(txtIdUsuario);
+        comboUsuarios = new JComboBox<>();
+        panelForm.add(comboUsuarios);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -66,10 +67,10 @@ public class ClienteGUI extends JFrame {
 
         model = new DefaultTableModel();
         model.addColumn("ID Cliente");
-        model.addColumn("Nombre"); // Nombre del usuario
-        model.addColumn("Apellido"); // Apellido del usuario
-        model.addColumn("Email"); // Email del usuario
-        model.addColumn("Teléfono"); // Teléfono del usuario
+        model.addColumn("Nombre");
+        model.addColumn("Apellido");
+        model.addColumn("Email");
+        model.addColumn("Teléfono");
 
         tableClientes = new JTable(model);
         add(new JScrollPane(tableClientes), BorderLayout.CENTER);
@@ -87,7 +88,7 @@ public class ClienteGUI extends JFrame {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int selectedRow = tableClientes.getSelectedRow();
-                txtIdUsuario.setText(model.getValueAt(selectedRow, 1).toString());
+                comboUsuarios.setSelectedItem(model.getValueAt(selectedRow, 1));
                 selectedIdCliente = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
             }
         });
@@ -100,6 +101,8 @@ public class ClienteGUI extends JFrame {
             }
         });
         add(btnEliminar, BorderLayout.SOUTH);
+
+        loadUsuarios(); // Cargar los usuarios disponibles
     }
 
     private void loadData() {
@@ -121,38 +124,58 @@ public class ClienteGUI extends JFrame {
         }
     }
 
+    private void loadUsuarios() {
+        comboUsuarios.removeAllItems(); // Limpiar el combo box
+        try {
+            List<Usuario> usuarios = usuarioDAO.obtenerUsuariosNoAsignadosCliente();
+            for (Usuario usuario : usuarios) {
+                comboUsuarios.addItem(usuario);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void retornar() {
         new PrincipalGUI().setVisible(true);
         setVisible(false);
     }
 
     private void guardarCliente() {
-        int idUsuario = Integer.parseInt(txtIdUsuario.getText());
-
-        Cliente cliente = new Cliente(idUsuario);
-        try {
-            clienteDAO.insertar(cliente);
-            loadData();
-            JOptionPane.showMessageDialog(this, "Cliente guardado exitosamente.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al guardar Cliente.");
+        Usuario usuarioSeleccionado = (Usuario) comboUsuarios.getSelectedItem();
+        if (usuarioSeleccionado != null) {
+            int idUsuario = usuarioSeleccionado.getId();
+            Cliente cliente = new Cliente(idUsuario);
+            try {
+                clienteDAO.insertar(cliente);
+                loadData();
+                comboUsuarios.removeItem(usuarioSeleccionado); // Remover el usuario del combo box
+                JOptionPane.showMessageDialog(this, "Cliente guardado exitosamente.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al guardar Cliente.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un usuario válido.");
         }
     }
 
     private void actualizarCliente() {
-        int idUsuario = Integer.parseInt(txtIdUsuario.getText());
-
-        Cliente cliente = new Cliente(idUsuario);
-        cliente.setIdCliente(selectedIdCliente);
-
-        try {
-            clienteDAO.actualizar(cliente);
-            loadData();
-            JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al actualizar Cliente.");
+        Usuario usuarioSeleccionado = (Usuario) comboUsuarios.getSelectedItem();
+        if (usuarioSeleccionado != null) {
+            int idUsuario = usuarioSeleccionado.getId();
+            Cliente cliente = new Cliente(idUsuario);
+            cliente.setIdCliente(selectedIdCliente);
+            try {
+                clienteDAO.actualizar(cliente);
+                loadData();
+                JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al actualizar Cliente.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un usuario válido.");
         }
     }
 
@@ -172,7 +195,7 @@ public class ClienteGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        ConexionBD conexion = new ConexionBD(); // obtener conexión;
+        ConexionBD conexion = new ConexionBD(); // obtener conexión
         Connection conn = conexion.establecerConexion();
         new ClienteGUI(conn).setVisible(true);
     }

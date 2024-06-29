@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,4 +89,59 @@ public class UsuarioDAO {
             stmt.executeUpdate();
         }
     }
+
+    public List<Usuario> obtenerUsuarios() throws SQLException {
+        List<Usuario> usuarios = new ArrayList<>();
+        String query = "SELECT * FROM Usuario"; // Asegúrate de que la tabla sea la correcta
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("idPersonal")); // Cambiar a idPersonal
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellido(rs.getString("apellido"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setTelefono(rs.getString("telefono"));
+                usuarios.add(usuario);
+            }
+        }
+        return usuarios;
+    }
+    public List<Usuario> obtenerUsuariosNoAsignadosCajero() throws SQLException {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT u.idPersonal, u.nombre, u.apellido, u.email, u.telefono FROM Usuario u " +
+                     "LEFT JOIN Cajero c ON u.idPersonal = c.idUsuario WHERE c.idUsuario IS NULL";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("idPersonal"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellido(rs.getString("apellido"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setTelefono(rs.getString("telefono"));
+                usuarios.add(usuario);
+            }
+        }
+        return usuarios;
+    }
+    public List<Usuario> obtenerUsuariosNoAsignadosCliente() throws SQLException {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT u.idPersonal, u.nombre, u.apellido, u.email, u.telefono FROM Usuario u " +
+                     "LEFT JOIN Cliente c ON u.idPersonal = c.idUsuario WHERE c.idUsuario IS NULL";
+        try (PreparedStatement pst = this.connection.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("idPersonal"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellido(rs.getString("apellido"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setTelefono(rs.getString("telefono"));
+                usuarios.add(usuario);
+            }
+        }
+        return usuarios;
+    }
+    
 }

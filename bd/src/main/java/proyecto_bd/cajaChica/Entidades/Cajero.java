@@ -21,17 +21,3 @@ public class Cajero {
     }
     
 }
-// CREATE TABLE Usuario (
-//   idPersonal INT PRIMARY KEY IDENTITY(1, 1),
-//   nombre VARCHAR(100),
-//   apellido VARCHAR(100),
-//   email VARCHAR(100),
-//   telefono VARCHAR(20),
-//   fechaIngreso DATE
-// );
-
-// CREATE TABLE Cajero (
-//   idCajero INT PRIMARY KEY IDENTITY(1, 1),
-//   idUsuario INT,
-//   FOREIGN KEY (idUsuario) REFERENCES Usuario (idPersonal)
-// );

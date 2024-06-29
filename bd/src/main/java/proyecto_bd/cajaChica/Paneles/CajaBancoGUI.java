@@ -6,8 +6,10 @@ import javax.swing.table.DefaultTableModel;
 import proyecto_bd.cajaChica.Conexion.ConexionBD;
 import proyecto_bd.cajaChica.Dao.CajaBancoDAO;
 import proyecto_bd.cajaChica.Dao.CajeroDAO;
+import proyecto_bd.cajaChica.Dao.UsuarioDAO;
 import proyecto_bd.cajaChica.Entidades.CajaBanco;
 import proyecto_bd.cajaChica.Entidades.Cajero;
+import proyecto_bd.cajaChica.Entidades.Usuario;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,15 +19,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CajaBancoGUI extends JFrame {
+    private UsuarioDAO usuarioDAO;
     private CajaBancoDAO cajaBancoDAO;
     private CajeroDAO cajeroDAO;
     private JTextField txtFecha, txtMonto;
-    private JComboBox<Integer> comboBoxIdCajero;
+    private JComboBox<String> comboBoxIdCajero;
     private JTable tableCajaBancos;
     private DefaultTableModel model;
     private int selectedIdCajaBanco;
 
     public CajaBancoGUI(Connection conexion) {
+        this.usuarioDAO = new UsuarioDAO(conexion);
         this.cajaBancoDAO = new CajaBancoDAO(conexion);
         this.cajeroDAO = new CajeroDAO(conexion);
         initComponents();
@@ -95,8 +99,7 @@ public class CajaBancoGUI extends JFrame {
                 int selectedRow = tableCajaBancos.getSelectedRow();
                 txtFecha.setText(model.getValueAt(selectedRow, 1).toString());
                 txtMonto.setText(model.getValueAt(selectedRow, 2).toString());
-                comboBoxIdCajero.setSelectedItem(Integer.parseInt(model.getValueAt(selectedRow, 3).toString()));
-                // Asegúrate de tener el idCajaBanco también, por ejemplo, en una columna oculta.
+                comboBoxIdCajero.setSelectedItem(model.getValueAt(selectedRow, 3).toString());
                 selectedIdCajaBanco = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
             }
         });
@@ -126,8 +129,9 @@ public class CajaBancoGUI extends JFrame {
     private void cargarCajeros() {
         try {
             List<Cajero> cajeros = cajeroDAO.obtenerCajeros();
-            for (Cajero cajero : cajeros) {
-                comboBoxIdCajero.addItem(cajero.getIdCajero());
+            for (Cajero cajero : cajeros) { 
+                Usuario usuario = usuarioDAO.obtenerUsuarioPorId(cajero.getIdUsuario());
+                comboBoxIdCajero.addItem(cajero.getIdCajero() + ": " + usuario.getNombre() + " " + usuario.getApellido());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -142,7 +146,8 @@ public class CajaBancoGUI extends JFrame {
     private void guardarCajaBanco() {
         String fecha = txtFecha.getText();
         double monto = Double.parseDouble(txtMonto.getText());
-        int idCajero = (int) comboBoxIdCajero.getSelectedItem();
+        String selectedCajeroString = (String) comboBoxIdCajero.getSelectedItem();
+        int idCajero = Integer.parseInt(selectedCajeroString.split(":")[0].trim()); // Asumiendo que el toString() de Cajero es "id: nombre apellido"
 
         CajaBanco cajaBanco = new CajaBanco(java.sql.Date.valueOf(fecha), monto, idCajero);
         try {
@@ -158,7 +163,8 @@ public class CajaBancoGUI extends JFrame {
     private void actualizarCajaBanco() {
         String fecha = txtFecha.getText();
         double monto = Double.parseDouble(txtMonto.getText());
-        int idCajero = (int) comboBoxIdCajero.getSelectedItem();
+        String selectedCajeroString = (String) comboBoxIdCajero.getSelectedItem();
+        int idCajero = Integer.parseInt(selectedCajeroString.split(":")[0].trim()); // Asumiendo que el toString() de Cajero es "id: nombre apellido"
 
         CajaBanco cajaBanco = new CajaBanco(java.sql.Date.valueOf(fecha), monto, idCajero);
         cajaBanco.setIdCajaBanco(selectedIdCajaBanco); // Establece el ID del registro a actualizar

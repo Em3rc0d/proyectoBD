@@ -46,4 +46,13 @@ public class CajaBanco {
         this.idCajaBanco = idCajaBanco;
     }
 
+    @Override
+    public String toString() {
+        return "CajaBanco{" +
+                "idCajaBanco=" + idCajaBanco +
+                ", fecha=" + fecha +
+                ", monto=" + monto +
+                ", idCajero=" + idCajero +
+                '}';
+    }
 }

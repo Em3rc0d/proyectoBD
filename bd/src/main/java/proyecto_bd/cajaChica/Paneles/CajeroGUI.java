@@ -1,5 +1,4 @@
 package proyecto_bd.cajaChica.Paneles;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,7 +19,7 @@ public class CajeroGUI extends JFrame {
 
     private CajeroDAO cajeroDAO;
     private UsuarioDAO usuarioDAO;
-    private JTextField txtIdUsuario;
+    private JComboBox<Usuario> comboUsuarios; // Cambiar JTextField a JComboBox
     private JTable tableCajeros;
     private DefaultTableModel model;
 
@@ -29,6 +28,7 @@ public class CajeroGUI extends JFrame {
         this.usuarioDAO = new UsuarioDAO(conexion);
         initComponents();
         loadData();
+        loadUsuarios();
         setLocationRelativeTo(null);
         setUndecorated(true); // Hace que la ventana sea undecorable
     }
@@ -49,8 +49,8 @@ public class CajeroGUI extends JFrame {
         });
         add(btnSalir, BorderLayout.BEFORE_LINE_BEGINS);
         panelForm.add(new JLabel("ID Usuario:"));
-        txtIdUsuario = new JTextField();
-        panelForm.add(txtIdUsuario);
+        comboUsuarios = new JComboBox<>();
+        panelForm.add(comboUsuarios);
 
         JButton btnAgregar = new JButton("Agregar");
         btnAgregar.addActionListener(new ActionListener() {
@@ -92,6 +92,19 @@ public class CajeroGUI extends JFrame {
         add(btnEliminar, BorderLayout.SOUTH);
     }
 
+    private void loadUsuarios() {
+        comboUsuarios.removeAllItems(); // Limpiar el combo box
+        try {
+            List<Usuario> usuarios = usuarioDAO.obtenerUsuariosNoAsignadosCajero();
+            for (Usuario usuario : usuarios) {
+                comboUsuarios.addItem(usuario);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
     private void loadData() {
         model.setRowCount(0);
         try {
@@ -117,17 +130,24 @@ public class CajeroGUI extends JFrame {
     }
 
     private void agregarCajero() {
-        int idUsuario = Integer.parseInt(txtIdUsuario.getText());
-        Cajero cajero = new Cajero(idUsuario);
-        try {
-            cajeroDAO.insertar(cajero);
-            model.addRow(new Object[]{cajero.getIdUsuario()});
-            JOptionPane.showMessageDialog(this, "Cajero agregado exitosamente.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al agregar el cajero.");
+        Usuario usuarioSeleccionado = (Usuario) comboUsuarios.getSelectedItem();
+        if (usuarioSeleccionado != null) {
+            int idUsuario = usuarioSeleccionado.getId();
+            Cajero cajero = new Cajero(idUsuario);
+            try {
+                cajeroDAO.insertar(cajero);
+                loadData();
+                comboUsuarios.removeItem(usuarioSeleccionado); // Remover el usuario del combo box
+                JOptionPane.showMessageDialog(this, "Cajero agregado exitosamente.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al agregar el cajero.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un usuario válido.");
         }
     }
+    
 
     private void actualizarCajero() {
         int selectedRow = tableCajeros.getSelectedRow();
@@ -170,3 +190,4 @@ public class CajeroGUI extends JFrame {
         new CajeroGUI(conn).setVisible(true);
     }
 }
+

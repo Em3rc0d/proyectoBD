@@ -17,6 +17,9 @@ public class Usuario {
         this.telefono = telefono;
         this.fechaIngreso = fechaIngreso;
     }
+    public Usuario(){
+
+    }
 
     public int getId() {
         return id;
@@ -66,5 +69,9 @@ public class Usuario {
         this.fechaIngreso = fechaIngreso;
     }
     
+    @Override
+    public String toString() {  
+        return nombre + " " + apellido;
+    }
 }
 
