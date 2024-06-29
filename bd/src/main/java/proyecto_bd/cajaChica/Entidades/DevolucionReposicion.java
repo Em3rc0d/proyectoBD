@@ -77,15 +77,10 @@ public class DevolucionReposicion {
         this.idCliente = idCliente;
     }
     
+    @Override
+    public String toString() {
+        return "DevolucionReposicion [idDevReposicion=" + idDevReposicion + ", fechaDevolucion=" + fechaDevolucion
+                + ", montoDevolucion=" + montoDevolucion + ", motivo=" + motivo + ", tipoOperacion=" + tipoOperacion
+                + ", idCajero=" + idCajero + ", idCliente=" + idCliente + "]";
+    }
 }
-// CREATE TABLE DevolucionReposicion (
-//   idDevReposicion INT PRIMARY KEY IDENTITY(1, 1),
-//   fechaDevolucion DATE,
-//   montoDevolucion DECIMAL(10,2),
-//   motivo VARCHAR(255),
-//   tipoOperacion VARCHAR(50),
-//   idCajero INT,
-//   idCliente INT,
-//   FOREIGN KEY (idCajero) REFERENCES Cajero (idCajero),
-//   FOREIGN KEY (idCliente) REFERENCES Cliente (idCliente)
-// );

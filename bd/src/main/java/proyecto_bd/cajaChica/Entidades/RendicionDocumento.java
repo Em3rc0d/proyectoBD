@@ -67,4 +67,16 @@ public class RendicionDocumento {
     public void setPorcentajeNoSustentado(double porcentajeNoSustentado) {
         this.porcentajeNoSustentado = porcentajeNoSustentado;
     }
+
+    @Override
+    public String toString() {
+        return "RendicionDocumento{" +
+                "idRendicionDocumento=" + idRendicionDocumento +
+                ", idCajero=" + idCajero +
+                ", fechaRendicion=" + fechaRendicion +
+                ", montoRendido=" + montoRendido +
+                ", porcentajeNoSustentado=" + porcentajeNoSustentado +
+                ", idCliente=" + idCliente +
+                '}';
+    }
 }

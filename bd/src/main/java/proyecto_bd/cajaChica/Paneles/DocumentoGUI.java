@@ -4,8 +4,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import proyecto_bd.cajaChica.Conexion.ConexionBD;
+import proyecto_bd.cajaChica.Dao.CajeroDAO;
+import proyecto_bd.cajaChica.Dao.UsuarioDAO;
 import proyecto_bd.cajaChica.Dao.DocumentoDAO;
+import proyecto_bd.cajaChica.Dao.RendicionDocumentoDAO;
 import proyecto_bd.cajaChica.Entidades.Documento;
+import proyecto_bd.cajaChica.Entidades.RendicionDocumento;
+import proyecto_bd.cajaChica.Entidades.Usuario;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,15 +20,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DocumentoGUI extends JFrame {
-
+    private CajeroDAO cajeroDAO;
+    private UsuarioDAO usuarioDAO;
     private DocumentoDAO documentoDAO;
-    private JTextField txtIdRendicionDocumento, txtDescripcion;
+    private RendicionDocumentoDAO rendicionDocumentoDAO;
+    private JTextField txtDescripcion;
+    private JComboBox<RendicionDocumento> comboBoxRendicionDocumento;
     private JTable tableDocumentos;
     private DefaultTableModel model;
     private int selectedIdDocumento = -1;
 
     public DocumentoGUI(Connection conexion) {
+        this.cajeroDAO = new CajeroDAO(conexion);
+        this.usuarioDAO = new UsuarioDAO(conexion);
         this.documentoDAO = new DocumentoDAO(conexion);
+        this.rendicionDocumentoDAO = new RendicionDocumentoDAO(conexion);
         initComponents();
         loadData();
         setLocationRelativeTo(null);
@@ -45,9 +56,12 @@ public class DocumentoGUI extends JFrame {
             }
         });
         add(btnSalir, BorderLayout.BEFORE_LINE_BEGINS);
-        panelForm.add(new JLabel("ID Rendición Documento:"));
-        txtIdRendicionDocumento = new JTextField();
-        panelForm.add(txtIdRendicionDocumento);
+
+        panelForm.add(new JLabel("Rendición Documento:"));
+        comboBoxRendicionDocumento = new JComboBox<>();
+        cargarRendicionesDocumento();
+        panelForm.add(comboBoxRendicionDocumento);
+
         panelForm.add(new JLabel("Descripción:"));
         txtDescripcion = new JTextField();
         panelForm.add(txtDescripcion);
@@ -65,7 +79,10 @@ public class DocumentoGUI extends JFrame {
 
         model = new DefaultTableModel();
         model.addColumn("ID");
-        model.addColumn("ID Rendición Documento");
+        model.addColumn("Cliente");
+        model.addColumn("Cajero");
+        model.addColumn("Fecha Rendición");
+        model.addColumn("Monto Rendido");
         model.addColumn("Descripción");
 
         tableDocumentos = new JTable(model);
@@ -85,7 +102,8 @@ public class DocumentoGUI extends JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int selectedRow = tableDocumentos.getSelectedRow();
                 if (selectedRow != -1) {
-                    txtIdRendicionDocumento.setText(model.getValueAt(selectedRow, 1).toString());
+                    RendicionDocumento rendicion = (RendicionDocumento) model.getValueAt(selectedRow, 1);
+                    comboBoxRendicionDocumento.setSelectedItem(rendicion);
                     txtDescripcion.setText(model.getValueAt(selectedRow, 2).toString());
                     selectedIdDocumento = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
                 }
@@ -107,11 +125,30 @@ public class DocumentoGUI extends JFrame {
         try {
             List<Documento> documentos = documentoDAO.obtenerDocumentos();
             for (Documento documento : documentos) {
+                RendicionDocumento rendicion = rendicionDocumentoDAO.obtenerRendicion(documento.getIdRendicionDocumento());
+                Usuario cajero = usuarioDAO.obtenerUsuarioPorId(rendicion.getIdCajero());
+                Usuario cliente = usuarioDAO.obtenerUsuarioPorId(rendicion.getIdCliente());
                 model.addRow(new Object[]{
                     documento.getIdDocumento(),
-                    documento.getIdRendicionDocumento(),
+                    cajero.getNombre() + " " + cajero.getApellido(),
+                    cliente.getNombre() + " " + cliente.getApellido(),
+                    rendicion.getFechaRendicion(),
+                    rendicion.getMontoRendido(),
                     documento.getDescripcion()
                 });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarRendicionesDocumento() {
+        try {
+            List<RendicionDocumento> rendiciones = rendicionDocumentoDAO.obtenerRendiciones();
+            for (RendicionDocumento rendicion : rendiciones) {
+                Usuario cajero = usuarioDAO.obtenerUsuarioPorId(rendicion.getIdCajero());
+                Usuario cliente = usuarioDAO.obtenerUsuarioPorId(rendicion.getIdCliente());
+                comboBoxRendicionDocumento.addItem(rendicion);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -124,7 +161,8 @@ public class DocumentoGUI extends JFrame {
     }
 
     private void guardarDocumento() {
-        int idRendicionDocumento = Integer.parseInt(txtIdRendicionDocumento.getText());
+        RendicionDocumento rendicion = (RendicionDocumento) comboBoxRendicionDocumento.getSelectedItem();
+        int idRendicionDocumento = rendicion.getIdRendicionDocumento();
         String descripcion = txtDescripcion.getText();
 
         Documento documento = new Documento(0, idRendicionDocumento, descripcion);
@@ -144,7 +182,8 @@ public class DocumentoGUI extends JFrame {
             return;
         }
 
-        int idRendicionDocumento = Integer.parseInt(txtIdRendicionDocumento.getText());
+        RendicionDocumento rendicion = (RendicionDocumento) comboBoxRendicionDocumento.getSelectedItem();
+        int idRendicionDocumento = rendicion.getIdRendicionDocumento();
         String descripcion = txtDescripcion.getText();
 
         Documento documento = new Documento(selectedIdDocumento, idRendicionDocumento, descripcion);

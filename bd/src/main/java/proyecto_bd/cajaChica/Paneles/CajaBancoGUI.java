@@ -59,7 +59,7 @@ public class CajaBancoGUI extends JFrame {
         panelForm.add(new JLabel("Monto:"));
         txtMonto = new JTextField();
         panelForm.add(txtMonto);
-        panelForm.add(new JLabel("ID Cajero:"));
+        panelForm.add(new JLabel("Cajero:"));
         comboBoxIdCajero = new JComboBox<>();
         cargarCajeros();
         panelForm.add(comboBoxIdCajero);
@@ -79,7 +79,7 @@ public class CajaBancoGUI extends JFrame {
         model.addColumn("ID");
         model.addColumn("Fecha");
         model.addColumn("Monto");
-        model.addColumn("ID Cajero");
+        model.addColumn("Cajero");
 
         tableCajaBancos = new JTable(model);
         add(new JScrollPane(tableCajaBancos), BorderLayout.CENTER);

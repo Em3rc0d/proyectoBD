@@ -2,7 +2,9 @@ package proyecto_bd.cajaChica.Dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import proyecto_bd.cajaChica.Entidades.RendicionDocumento;
@@ -58,11 +60,42 @@ public class RendicionDocumentoDAO {
         }
     }
 
-    public List<RendicionDocumento> obtenerRendiciones() {
-        return null;
+    public List<RendicionDocumento> obtenerRendiciones() throws SQLException {
+        String sql = "SELECT * FROM RendicionDocumento";
+        try (PreparedStatement pst = connection.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+            List<RendicionDocumento> rendiciones = new ArrayList<>();
+            while (rs.next()) {
+                RendicionDocumento rendicion = new RendicionDocumento(
+                    rs.getInt("idCajero"),
+                    rs.getDate("fechaRendicion"),
+                    rs.getDouble("montoRendido"),
+                    rs.getDouble("porcentajeNoSustentado"),
+                    rs.getInt("idCliente")
+                );
+                rendicion.setIdRendicionDocumento(rs.getInt("idRendDocumento"));
+                rendiciones.add(rendicion);
+            }
+            return rendiciones;
+        }
     }
 
-    public RendicionDocumento obtenerRendicion(int idRendicion) {
-        return null;
+    public RendicionDocumento obtenerRendicion(int idRendicion) throws SQLException {
+        String sql = "SELECT * FROM RendicionDocumento WHERE idRendDocumento = ?";
+        try (PreparedStatement pst = connection.prepareStatement(sql)) {    
+            pst.setInt(1, idRendicion);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new RendicionDocumento(
+                        rs.getInt("idCajero"),
+                        rs.getDate("fechaRendicion"),
+                        rs.getDouble("montoRendido"),
+                        rs.getDouble("porcentajeNoSustentado"),
+                        rs.getInt("idCliente")
+                    );
+                }
+                return null;
+            }
+        }
     } 
 }

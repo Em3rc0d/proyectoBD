@@ -5,7 +5,13 @@ import javax.swing.table.DefaultTableModel;
 
 import proyecto_bd.cajaChica.Conexion.ConexionBD;
 import proyecto_bd.cajaChica.Dao.DevolucionReposicionDAO;
+import proyecto_bd.cajaChica.Dao.UsuarioDAO;
+import proyecto_bd.cajaChica.Dao.CajeroDAO;
+import proyecto_bd.cajaChica.Dao.ClienteDAO;
 import proyecto_bd.cajaChica.Entidades.DevolucionReposicion;
+import proyecto_bd.cajaChica.Entidades.Usuario;
+import proyecto_bd.cajaChica.Entidades.Cajero;
+import proyecto_bd.cajaChica.Entidades.Cliente;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,19 +21,25 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DevolucionReposicionGUI extends JFrame {
-
+    private UsuarioDAO usuarioDAO;
     private DevolucionReposicionDAO devolucionReposicionDAO;
-    private JTextField txtFecha, txtMonto, txtMotivo, txtTipoOperacion, txtIdCajero, txtIdCliente;
+    private CajeroDAO cajeroDAO;
+    private ClienteDAO clienteDAO;
+    private JTextField txtFecha, txtMonto, txtMotivo;
+    private JComboBox<String> comboBoxTipoOperacion, comboBoxCajero, comboBoxCliente;
     private JTable tableDevolucionesReposiciones;
     private DefaultTableModel model;
     private int selectedIdDevReposicion;
 
     public DevolucionReposicionGUI(Connection conexion) {
+        this.usuarioDAO = new UsuarioDAO(conexion);
         this.devolucionReposicionDAO = new DevolucionReposicionDAO(conexion);
+        this.cajeroDAO = new CajeroDAO(conexion);
+        this.clienteDAO = new ClienteDAO(conexion);
         initComponents();
         loadData();
         setLocationRelativeTo(null);
-        setUndecorated(true); // Hace que la ventana sea undecorable
+        setUndecorated(true); 
     }
 
     private void initComponents() {
@@ -55,14 +67,19 @@ public class DevolucionReposicionGUI extends JFrame {
         txtMotivo = new JTextField();
         panelForm.add(txtMotivo);
         panelForm.add(new JLabel("Tipo Operación:"));
-        txtTipoOperacion = new JTextField();
-        panelForm.add(txtTipoOperacion);
-        panelForm.add(new JLabel("ID Cajero:"));
-        txtIdCajero = new JTextField();
-        panelForm.add(txtIdCajero);
-        panelForm.add(new JLabel("ID Cliente:"));
-        txtIdCliente = new JTextField();
-        panelForm.add(txtIdCliente);
+        String[] tiposOperacion = {"Devolución", "Reposición"};
+        comboBoxTipoOperacion = new JComboBox<>(tiposOperacion);
+        panelForm.add(comboBoxTipoOperacion);
+
+        panelForm.add(new JLabel("Cajero:"));
+        comboBoxCajero = new JComboBox<>();
+        cargarCajeros();
+        panelForm.add(comboBoxCajero);
+
+        panelForm.add(new JLabel("Cliente:"));
+        comboBoxCliente = new JComboBox<>();
+        cargarClientes();
+        panelForm.add(comboBoxCliente);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -104,9 +121,9 @@ public class DevolucionReposicionGUI extends JFrame {
                     txtFecha.setText(model.getValueAt(selectedRow, 1).toString());
                     txtMonto.setText(model.getValueAt(selectedRow, 2).toString());
                     txtMotivo.setText(model.getValueAt(selectedRow, 3).toString());
-                    txtTipoOperacion.setText(model.getValueAt(selectedRow, 4).toString());
-                    txtIdCajero.setText(model.getValueAt(selectedRow, 5).toString());
-                    txtIdCliente.setText(model.getValueAt(selectedRow, 6).toString());
+                    comboBoxTipoOperacion.setSelectedItem(model.getValueAt(selectedRow, 4).toString());
+                    comboBoxCajero.setSelectedItem(model.getValueAt(selectedRow, 5).toString());
+                    comboBoxCliente.setSelectedItem(model.getValueAt(selectedRow, 6).toString());
                     selectedIdDevReposicion = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
                 }
             }
@@ -142,6 +159,30 @@ public class DevolucionReposicionGUI extends JFrame {
         }
     }
 
+    private void cargarCajeros() {
+        try {
+            List<Cajero> cajeros = cajeroDAO.obtenerCajeros();
+            for (Cajero cajero : cajeros) {
+                Usuario usuario = usuarioDAO.obtenerUsuarioPorId(cajero.getIdUsuario());
+                comboBoxCajero.addItem(cajero.getIdCajero() + ": " + usuario.getNombre() + " " + usuario.getApellido());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarClientes() {
+        try {
+            List<Cliente> clientes = clienteDAO.obtenerClientes();
+            for (Cliente cliente : clientes) {
+                Usuario usuario = usuarioDAO.obtenerUsuarioPorId(cliente.getIdUsuario());
+                comboBoxCliente.addItem(cliente.getIdCliente() + ": " + usuario.getNombre() + " " + usuario.getApellido());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void retornar() {
         new PrincipalGUI().setVisible(true);
         setVisible(false);
@@ -151,9 +192,13 @@ public class DevolucionReposicionGUI extends JFrame {
         String fecha = txtFecha.getText();
         double monto = Double.parseDouble(txtMonto.getText());
         String motivo = txtMotivo.getText();
-        String tipoOperacion = txtTipoOperacion.getText();
-        int idCajero = Integer.parseInt(txtIdCajero.getText());
-        int idCliente = Integer.parseInt(txtIdCliente.getText());
+        String tipoOperacion = (String) comboBoxTipoOperacion.getSelectedItem();
+
+        String selectedCajeroString = (String) comboBoxCajero.getSelectedItem();
+        int idCajero = Integer.parseInt(selectedCajeroString.split(":")[0].trim());
+
+        String selectedClienteString = (String) comboBoxCliente.getSelectedItem();
+        int idCliente = Integer.parseInt(selectedClienteString.split(":")[0].trim());
 
         DevolucionReposicion devolucionReposicion = new DevolucionReposicion(0, java.sql.Date.valueOf(fecha), monto,
                 motivo, tipoOperacion, idCajero, idCliente);
@@ -176,9 +221,13 @@ public class DevolucionReposicionGUI extends JFrame {
         String fecha = txtFecha.getText();
         double monto = Double.parseDouble(txtMonto.getText());
         String motivo = txtMotivo.getText();
-        String tipoOperacion = txtTipoOperacion.getText();
-        int idCajero = Integer.parseInt(txtIdCajero.getText());
-        int idCliente = Integer.parseInt(txtIdCliente.getText());
+        String tipoOperacion = (String) comboBoxTipoOperacion.getSelectedItem();
+
+        String selectedCajeroString = (String) comboBoxCajero.getSelectedItem();
+        int idCajero = Integer.parseInt(selectedCajeroString.split(":")[0].trim());
+
+        String selectedClienteString = (String) comboBoxCliente.getSelectedItem();
+        int idCliente = Integer.parseInt(selectedClienteString.split(":")[0].trim());
 
         DevolucionReposicion devolucionReposicion = new DevolucionReposicion(selectedIdDevReposicion, java.sql.Date.valueOf(fecha), monto,
                 motivo, tipoOperacion, idCajero, idCliente);
