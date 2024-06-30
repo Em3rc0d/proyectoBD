@@ -40,6 +40,7 @@ public class PrincipalGUI extends javax.swing.JFrame {
         btnSalir = new javax.swing.JButton();
         btnCliente = new javax.swing.JButton();
         btnUsuario = new javax.swing.JButton();
+        btnConsultas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,11 +106,19 @@ public class PrincipalGUI extends javax.swing.JFrame {
             }
         });
 
+        btnConsultas.setText("Consultas");
+        btnConsultas.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, java.awt.Color.black, null));
+        btnConsultas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,7 +128,8 @@ public class PrincipalGUI extends javax.swing.JFrame {
                     .addComponent(btnDevRep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnConsultas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -139,9 +149,11 @@ public class PrincipalGUI extends javax.swing.JFrame {
                 .addComponent(btnDevRep)
                 .addGap(18, 18, 18)
                 .addComponent(btnDocumento)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(btnConsultas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSalir)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addGap(21, 21, 21))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -196,6 +208,12 @@ public class PrincipalGUI extends javax.swing.JFrame {
         setVisible(false);
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
+    private void btnConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultasActionPerformed
+        // TODO add your handling code here:
+        new ConsultasGUI().setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_btnConsultasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -236,6 +254,7 @@ public class PrincipalGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnCajaBanco;
     private javax.swing.JButton btnCajero;
     private javax.swing.JButton btnCliente;
+    private javax.swing.JButton btnConsultas;
     private javax.swing.JButton btnDevRep;
     private javax.swing.JButton btnDocumento;
     private javax.swing.JButton btnSalir;
