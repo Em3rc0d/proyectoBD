@@ -45,7 +45,7 @@ public class DevolucionReposicionDAO {
     }
 
     public void eliminar(int idDevReposicion) throws SQLException {
-        String sql = "DELETE FROM DevolucionReposicion WHERE id = ?";
+        String sql = "DELETE FROM DevolucionReposicion WHERE idDevReposicion = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setInt(1, idDevReposicion);
             pst.executeUpdate();
@@ -76,7 +76,7 @@ public class DevolucionReposicionDAO {
     }
 
     public DevolucionReposicion obtenerDevolucionReposicion(int idDevReposicion) throws SQLException {
-        String sql = "SELECT * FROM DevolucionReposicion WHERE id = ?";
+        String sql = "SELECT * FROM DevolucionReposicion WHERE idDevReposicion = ?";
         try (PreparedStatement pst = this.conexion.prepareStatement(sql)) {
             pst.setInt(1, idDevReposicion);
             try (ResultSet rs = pst.executeQuery()) {
