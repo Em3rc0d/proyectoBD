@@ -36,11 +36,40 @@ public class ConsultasGUI extends JFrame {
     private void crearPanelesConsultas(JTabbedPane tabbedPane) {
         // Consultas con inputs
         agregarPanelConsultaConInput(tabbedPane, "Consulta 1",
-                "SELECT * FROM Cliente WHERE idUsuario = ?");
+                "SELECT Usuario.*\n" +
+                "FROM Usuario\n" +
+                "JOIN Cliente ON Usuario.idPersonal = Cliente.idUsuario\n" +
+                "WHERE Cliente.idCliente = ?");
         agregarPanelConsultaConInput(tabbedPane, "Consulta 2",
-                "SELECT * FROM Cajero WHERE idUsuario = ?");
+                "SELECT Usuario.*\n" +
+                "FROM Usuario\n" +
+                "JOIN Cajero ON Usuario.idPersonal = Cajero.idUsuario\n" +
+                "WHERE Cajero.idCajero = ?");
         agregarPanelConsultaConInput(tabbedPane, "Consulta 3",
-                "SELECT * FROM EntregaDinero WHERE idCliente = ?");
+                "SELECT \n" +
+                "    ed.idEntregaDinero,\n" +
+                "    ed.fechaEntrega, " +
+                "    ed.monto, " +
+                "    ed.motivo, " +
+                "    c.nombre AS nombreCliente,\n" +
+                "    c.apellido AS apellidoCliente,\n" +
+                "    caj.nombre AS nombreCajero,\n" +
+                "    caj.apellido AS apellidoCajero,\n" +
+                "    (SELECT SUM(monto) \n" +
+                "     FROM EntregaDinero \n" +
+                "     WHERE idCliente = ed.idCliente) AS totalEntregado\n" +
+                "FROM \n" +
+                "    EntregaDinero ed\n" +
+                "JOIN \n" +
+                "    Cliente cli ON ed.idCliente = cli.idCliente\n" +
+                "JOIN \n" +
+                "    Usuario c ON cli.idUsuario = c.idPersonal\n" +
+                "JOIN \n" +
+                "    Cajero cajero ON ed.idCajero = cajero.idCajero\n" +
+                "JOIN \n" +
+                "    Usuario caj ON cajero.idUsuario = caj.idPersonal\n" +
+                "WHERE \n" +
+                "    ed.idCliente = ?;");
         agregarPanelConsultaConInput(tabbedPane, "Consulta 4",
                 "SELECT * FROM RendicionDocumento WHERE idCajero = ?");
         agregarPanelConsultaConInput(tabbedPane, "Consulta 5",
@@ -105,10 +134,8 @@ public class ConsultasGUI extends JFrame {
         btnRegresar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getContentPane().removeAll();
-                crearPanelesConsultas((JTabbedPane) getContentPane().getComponent(0));
-                getContentPane().revalidate();
-                getContentPane().repaint();
+                new PrincipalGUI().setVisible(true);
+                setVisible(false);
             }
         });
 
@@ -161,7 +188,6 @@ public class ConsultasGUI extends JFrame {
             btnRegresar.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    
                     new ConsultasGUI().setVisible(true);
                     setVisible(false);
                 }
